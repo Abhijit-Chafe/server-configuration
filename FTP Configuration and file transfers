@@ -31,6 +31,8 @@ ftp 192.168.x.x    ============== access the FTP from client machine
 (for anonymous user password should be "abc@gmail.com" )
 (use bye for exit)
 
+NOTE: for more you can play with vsftpd.conf file and can allow or deny users and can change the ports for communication as well.
+
 
 
 
