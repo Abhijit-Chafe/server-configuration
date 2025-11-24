@@ -23,12 +23,12 @@ systemctl enable vsftpd.service   ========== enable the service
 firewall-cmd --permanent --add-service=ftp --zone=public  =========== alow ftp traffic from firewall
 firewall-cmd --reload  ======== reload to implement changes
 firewall-cmd --list-all ========= check
+
 ftp 192.168.x.x    ============== access the FTP from client machine
 
 (for downloading files use  "get filename" for upload "put filename" an for multiple file downloads use "mget f1 f2 f3")
 (if you are using local user then you will be directed to "/home" directory and if you are using anonymous user then the default path "/var/ftp/pub")
 (for anonymous user password should be "abc@gmail.com" )
-(
 (use bye for exit)
 
 
