@@ -1,4 +1,4 @@
-########### FTP Server Configuration #############
+########### FTP Server Configuration ##############
 
 hostnamectl
 hostnamectl set-hostname ftp.server  ============= set static hostname first
