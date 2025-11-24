@@ -1,0 +1,56 @@
+********** for Host Machine ************
+
+(set hostname first)
+hostnamectl
+hostnamectl set-hostname nfsserver.nehraclasses.local  ====== setting hostname
+
+(Rlogin to apply changes)
+
+dnf repolist all  ======== check all repository are configured and enabled
+dnf install nfs-utils -y  ========= install packages of nfs-utils
+systemctl start nfs-server.service
+systemctl enable nfs-server.service
+systemctl status nfs-server.service
+
+rpcinfo -p | grep nfs  =============== check if service is working on port 2049
+mkdir -p /mnt/nfs_shares/docs ====== make directory to share with client to access files
+(now this will use the / partition share and ownership should be of user "nobody" which is service account inside /etc/shadow we can find it )
+(we need ti=o give full acces to the share partition)
+chmod -R 777 /mnt/nfs_shares/docs  ======= giving all permision so that all user can use it
+systemctl restart nfs-utils.service  ======== restart the service
+
+(now we need to mention the share in the configuratuon file)
+
+***** now vim the file vim /etc/exports file and type following *****
+/mnt/nfs_shares/docs clientip(rw,sync,no_all_squash,root_squash)
+cat /etc/exports   ===== conform file contents once
+
+exportfs -arv  ==== export
+
+firewall-cmd --permanent --add-service=nfs  ========= define firewall so that it should not block nfs request
+firewall-cmd --permanent --add-service=rpc-bind ========== service which redirect client on proper port no 
+firewall-cmd --permanent --add-service=mountd =========== allow remote host to mount file system
+firewall-cmd --reload 
+firewall-cmd --list-all  ===check
+
+
+********** for Client Machine ************
+
+hostnamectl set-hostname nfsclient.nehraclasses.local  ====== setting hostname
+Re-login and check hostname
+dnf repolist all 
+dnf install nff-utils
+dnf install nfs4-acl-tools 
+showmount -e serverip 
+mkdir -p /mnt/client_share ======= create dir 
+mount -t nfs serverip:/mnt/nfs_shares/docs/ /mnt/client_share
+df -h  ========verify 
+nfsstats  ==== nfs version
+mount | grep -i nfs
+
+********* now we will create file in server side and make a file in /mnt/nfs_shares/docs/ ***********
+echo nehra classes are awesome > server_nfs_file.txt
+ll -lrth
+
+NOTE: what file you created will same be reflected in client path and file created in client side can be access from server (vice versa)
+make fstab entry in client side
