@@ -1,0 +1,38 @@
+########### FTP Server Configuration #############
+
+hostnamectl
+hostnamectl set-hostname ftp.server  ============= set static hostname first
+
+(then log out and log in to see changes)
+
+dnf repolist all                     ========= check if repositories are configured or not
+
+(now you need two packages to use FTP one is FTP and next is VSFTPD 
+FTP is for command and vsftpd is for service)
+
+dnf install -y ftp vsftpd           ================ install packages
+
+(check FTP config file in ll /etc/vsftpd/vsftpd.conf and backup this file vsftpd.conf.bkp)
+
+cp -rv /etc/vsftpd/vsftpd.conf /etc/vsftpd/vsftpd.conf.bkp  ==============
+
+(now you can enable anonymous user inside the conf file and make it yes)
+
+systemctl start vsftpd.service    ========== start the service 
+systemctl enable vsftpd.service   ========== enable the service
+firewall-cmd --permanent --add-service=ftp --zone=public  =========== alow ftp traffic from firewall
+firewall-cmd --reload  ======== reload to implement changes
+firewall-cmd --list-all ========= check
+ftp 192.168.x.x    ============== access the FTP from client machine
+
+(for downloading files use  "get filename" for upload "put filename" an for multiple file downloads use "mget f1 f2 f3")
+(if you are using local user then you will be directed to "/home" directory and if you are using anonymous user then the default path "/var/ftp/pub")
+(for anonymous user password should be "abc@gmail.com" )
+(
+(use bye for exit)
+
+
+
+
+
+
